@@ -41,9 +41,16 @@
                 <div class="col-md-2"><input type="text" name="content" class="form-control" placeholder="거래내용"></div>
                 <div class="col-md-2"><input type="number" name="amount" id="amount" class="form-control" placeholder="금액" required oninput="handleAmountInput(this)"></div>
                 <div class="col-md-2">
-                    <select name="account" class="form-select">
-                        <option value="카드">카드</option><option value="현금">현금</option><option value="이체">이체</option><option value="기타">기타</option>
-                    </select>
+                    <div class="input-group">
+                        <select name="account" id="accountSelect" class="form-select">
+                            <option value="현금">현금</option>
+                            <option value="국민은행">국민은행</option>
+                            <option value="신한은행">신한은행</option>
+                            <option value="삼성카드">삼성카드</option>
+                            <option value="카카오뱅크">카카오뱅크</option>
+                        </select>
+                        <button class="btn btn-outline-secondary px-2" type="button" onclick="editAccounts()" title="계정 편집"><i class="bi bi-gear"></i></button>
+                    </div>
                 </div>
                 <div class="col-md-1"><button type="submit" class="btn btn-primary w-100">저장</button></div>
             </form>
@@ -220,6 +227,44 @@ function getFinalAmountValue() {
     const finalNum = Number(rawValue.replace(/[^0-9-]/g, '')); 
     return isNaN(finalNum) ? 0 : finalNum;
 }
+
+// 계정 항목 편집
+function editAccounts() {
+    const currentAccounts = Array.from(document.getElementById('accountSelect').options).map(opt => opt.value).join(', ');
+    const newAccountsStr = prompt("계정 항목을 쉼표(,)로 구분하여 입력하세요.", currentAccounts);
+    if (newAccountsStr !== null && newAccountsStr.trim() !== "") {
+        const newAccounts = newAccountsStr.split(',').map(item => item.trim()).filter(item => item !== "");
+        if (newAccounts.length > 0) {
+            localStorage.setItem('userAccounts', JSON.stringify(newAccounts));
+            loadAccounts();
+        }
+    }
+}
+
+// 계정 항목 불러오기
+function loadAccounts() {
+    const savedAccountsStr = localStorage.getItem('userAccounts');
+    const select = document.getElementById('accountSelect');
+    if (savedAccountsStr) {
+        try {
+            const savedAccounts = JSON.parse(savedAccountsStr);
+            if (Array.isArray(savedAccounts) && savedAccounts.length > 0) {
+                select.innerHTML = '';
+                savedAccounts.forEach(account => {
+                    const opt = document.createElement('option');
+                    opt.value = account;
+                    opt.innerText = account;
+                    select.appendChild(opt);
+                });
+            }
+        } catch (e) {
+            console.error("로컬 스토리지 파싱 오류", e);
+        }
+    }
+}
+
+// 페이지 로드 시 계정 항목 불러오기 실행
+loadAccounts();
 </script>
 </body>
 </html>
