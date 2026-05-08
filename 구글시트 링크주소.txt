@@ -1,0 +1,4 @@
+구글시트 링크
+https://docs.google.com/spreadsheets/d/167Rp3TT2cHz8v0hp29hMbXn9H1PTp179bNM2WvGLPaI/edit?usp=sharing
+
+링크로 들어가서 파일 > 사본만들기로 자신의 드라이브에 저장해서 사용하세요. 
